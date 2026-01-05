@@ -38,8 +38,8 @@ class MayaUmani:
         response = self.client.chat.completions.create(
             model=self.model,
             messages=messages,
-            temperature=0.7,
-            max_tokens=300
+            temperature=0.5,
+            max_tokens=200
         )
         
         assistant_message = response.choices[0].message.content
