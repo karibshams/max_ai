@@ -1,6 +1,6 @@
 """
 Main Test Interface - Live Chat with Maya & Malik
-Complete test platform with all conversation data
+EXACT 100% responses from database + 0.5 temperature for creative novel questions
 """
 
 import os
@@ -21,8 +21,8 @@ load_dotenv()
 class ChatInterface:
     def __init__(self):
         """Initialize chat interface with both coaches"""
-        self.maya = MayaUmani(MAYA_SYSTEM_PROMPT)
-        self.malik = MalikNadir(MALIK_SYSTEM_PROMPT)
+        self.maya = MayaUmani(MAYA_SYSTEM_PROMPT, SCENARIO_RESPONSES)
+        self.malik = MalikNadir(MALIK_SYSTEM_PROMPT, SCENARIO_RESPONSES)
         self.current_coach = None
         self.coach_name = None
         self.coach_type = None
@@ -76,7 +76,8 @@ class ChatInterface:
         print("="*60)
         
         for coach_name in ["maya", "malik"]:
-            print(f"\n{coach_name.upper()}:")
+            coach_display = "MAYA UMANI" if coach_name == "maya" else "MALIK NADIR"
+            print(f"\n{coach_display}:")
             for category, starters in CONVERSATION_STARTERS[coach_name].items():
                 print(f"\n  {category.replace('_', ' ').upper()}:")
                 for i, starter in enumerate(starters[:2], 1):
@@ -88,27 +89,20 @@ class ChatInterface:
         print("EXAMPLE SCENARIOS")
         print("="*60)
         
-        scenarios = {
-            "feeling_overwhelmed": "Feeling Overwhelmed",
-            "self_doubt": "Self-Doubt",
-            "loss_of_motivation": "Loss of Motivation",
-            "fear_wrong_decision": "Fear of Wrong Decision",
-            "stress_sleep": "Stress & Sleep Issues",
-            "relationship_conflict": "Relationship Conflict",
-            "procrastination": "Procrastination",
-            "boundaries": "Struggling with Boundaries",
-            "career_doubt": "Career/Purpose Doubt",
-            "setback_loss": "Setback or Loss"
-        }
-        
         for coach_name in ["maya", "malik"]:
-            print(f"\n{coach_name.upper()}:")
-            for scenario_key, scenario_name in list(scenarios.items())[:3]:
-                scenario = get_scenario_response(coach_name, scenario_key)
-                if scenario:
-                    print(f"\n  {scenario_name}:")
-                    print(f"    User: {scenario.get('user', 'N/A')}")
-                    print(f"    Coach: {scenario.get('response', 'N/A')}")
+            coach_display = "MAYA UMANI" if coach_name == "maya" else "MALIK NADIR"
+            print(f"\n{coach_display}:")
+            scenarios = SCENARIO_RESPONSES.get(coach_name, {})
+            for scenario_key in list(scenarios.keys())[:3]:
+                scenario = scenarios[scenario_key]
+                title = scenario.get("title", "")
+                user_input = scenario.get("user", "")
+                response_key = "maya" if coach_name == "maya" else "malik"
+                coach_response = scenario.get(response_key, "")
+                
+                print(f"\n  {title}:")
+                print(f"    User: {user_input}")
+                print(f"    Coach: {coach_response}")
     
     def start_chat(self):
         """Start live chat session"""
@@ -184,6 +178,7 @@ def main():
     print("WELCOME TO AI COACHING PLATFORM")
     print("="*60)
     print("Natural, Professional Coaching with AI")
+    print("EXACT 100% Responses + Creative Novel Questions")
     print("="*60)
     
     try:
