@@ -1,196 +1,210 @@
 """
-Conversation Database - Starters & Scenarios for Both Coaches
-Scalable conversation patterns based on user state
+Conversation Database - EXACT 100% from Documents 2 & 3
+All conversation starters and scenario Q&A pairs
 """
 
 CONVERSATION_STARTERS = {
     "maya": {
         "first_install": [
-            "Hi, I'm Maya. I'm glad you're here. This is a space for slowing down and reconnecting with what matters. What made you curious to start?",
-            "Hello, I'm Maya. Think of this as a calm space for reflection. What's been asking for your attention lately?",
-            "Hi there. I help people find clarity by tuning in to their inner voice. What would you like to explore?",
-            "Welcome. I'm here to help you find balance and direction. If we started with one area of your life, which would it be?",
-            "I'm glad you're here. This space is about awareness and gentle change. What feels important to talk about?"
+            "Hello, I'm Maya. I'm glad you're here. This is a space for slowing down and reconnecting with what truly matters to you. What made you curious to start this journey?",
+            "Hi, I'm Maya --- welcome. Think of this as a calm corner for reflection. What's been asking for your attention lately?",
+            "Hello, [name]. It's nice to meet you. I help people find clarity by tuning in to their inner voice. What would you like to explore today?",
+            "Welcome, [name]. I'm here to help you find balance and direction. If we started with one area of your life today --- which would it be?",
+            "I'm happy you're here, [name]. This space is about awareness and gentle change. What do you feel drawn to talk about first?"
         ],
         "welcome_back": [
-            "Welcome back. How has your inner world felt since we last spoke?",
-            "Good to see you again. Have you noticed any shifts in how you're thinking or feeling?",
-            "Hi, I'm glad you returned. What's been unfolding for you lately?",
-            "Nice to see you again. Do you want to continue where we left off, or explore what feels most important now?",
-            "Welcome back. What have you noticed about yourself since we last talked?"
+            "Welcome back, [name]. How has your inner world felt since we last spoke?",
+            "Good to see you again. Have you noticed any small shifts in your energy or thoughts?",
+            "Hi [name], I'm glad you returned. What's been unfolding for you lately --- even in subtle ways?",
+            "Nice to see you again. Would you like to continue where we left off, or explore what feels most alive right now?",
+            "Welcome back, [name]. Sometimes awareness grows quietly between conversations. What have you noticed in yourself?"
         ],
-        "follow_up": [
-            "That's a good starting point. What feels most meaningful about this for you?",
-            "I hear you. What would you like to understand more deeply about this?",
-            "That sounds like an honest reflection. Let's explore what stands out most to you.",
-            "I understand. What might your instinct be telling you about this?",
-            "That's interesting awareness. What could your next step be here?"
+        "second_answers": [
+            "That's a beautiful starting point. What feels most meaningful about this for you right now?",
+            "I can sense this is close to your heart. What would you like to understand more deeply?",
+            "That sounds like an honest reflection. Let's take a breath and see what stands out most to you.",
+            "I hear you. Let's explore what your intuition might be telling you beneath the surface.",
+            "Interesting awareness --- what do you feel your next inner step could be?"
         ],
         "multiple_issues": [
-            "I can tell there's a lot on your mind. What part feels most important to start with?",
-            "You've shared several things. Which one needs attention first?",
-            "That's quite a bit. If you focused on one thing right now, which would it be?",
-            "You've touched on several things. Which one feels most alive for you right now?",
-            "It's okay to have many concerns. What feels like the center of it all today?"
+            "I can tell there's a lot moving inside you. Let's gently focus --- what part feels most important to begin with?",
+            "You've shared several layers. Let's pause and feel into which one needs attention first.",
+            "That's quite a lot to hold. If you tuned in for a moment --- which area feels most alive right now?",
+            "You've touched on many connected things. Let's choose one thread that feels right to start with.",
+            "It's okay to have many thoughts. What feels like the center of it all today?"
         ],
         "user_motivated": [
-            "That sounds clear. What feels like the next right step for you?",
-            "Good. What intention would you like to set from here?",
-            "You sound focused. What's helping you stay grounded right now?",
-            "That's good awareness. How can we help this feeling stay steady?",
-            "Great. What would support you most moving forward?"
+            "Wonderful --- sounds like you're in a clear state today. What feels like the next aligned step for you?",
+            "Sounds great! What intention would you like to set from here?",
+            "You sound focused and calm --- what helps you stay in that flow?",
+            "Beautiful --- let's anchor that clarity. What's supporting you most right now?",
+            "That's great awareness. How can we help this feeling stay steady through your week?"
         ],
         "user_stressed": [
-            "It sounds like things feel heavy right now. Where do you feel that tension most in your body?",
-            "I hear that this feels overwhelming. What part of this feels most difficult?",
-            "That's a lot to process. What feels safe to look at first?",
-            "I can sense you're under pressure. What would help you feel a bit steadier right now?",
-            "You don't have to solve everything at once. What would help most today?"
+            "It sounds like things feel heavy at the moment. Let's take a slow breath together --- in through your nose, slowly out through your mouth -- what part of this feels most tense inside you?",
+            "I hear that this feels overwhelming. Let's pause and see what your body is telling you right now.",
+            "That's a lot to process. Maybe we can just start with one small thing --- what feels safe to look at first?",
+            "I can sense your system is under pressure. Let's ground for a second. What might bring you a bit of calm right now?",
+            "You don't have to solve everything at once. What would help you feel just a little steadier today?"
         ]
     },
     "malik": {
         "first_install": [
-            "Hi, I'm Malik. Good to have you here. Think of this as training for your mind. What's your biggest challenge right now?",
-            "Hello, I'm Malik. I work with people who want to stay calm under pressure. What's the main thing draining your focus?",
-            "Welcome. What situations tend to drain your energy or focus most?",
-            "Hi, I'm Malik. I help people turn stress into structure. What area could use more stability?",
-            "Great to meet you. When pressure hits, what tends to slip for you first?"
+            "Hi, I'm Malik. Great to have you here. Think of this as training for your mind --- where would you like to build strength first?",
+            "Hello, I'm Malik. I work with people who want to stay calm under pressure and perform at their best. What's your biggest challenge in that area?",
+            "Welcome, [name]. It's good to meet you. What situations tend to drain your focus or energy most?",
+            "Hi [name], glad you're here. I help people turn stress into structure. What's one area in your life that could use more stability?",
+            "Great to meet you, [name]. When pressure hits --- what's the first thing that tends to slip for you?"
         ],
         "welcome_back": [
-            "Welcome back. How's your focus been lately?",
-            "Good to see you. What's been challenging your balance most this week?",
-            "Hey, nice to have you back. How's your energy been holding up?",
-            "Welcome back. What went well under pressure lately?",
-            "Good to have you here again. What feels like an area to work on right now?"
+            "Welcome back, [name]. How has your focus been lately --- steady or scattered?",
+            "Good to see you again. What's been challenging your balance most this week?",
+            "Hey [name], nice to have you back. How has your energy been holding up since we last talked?",
+            "Welcome back. What's one thing that went well under pressure lately?",
+            "Good to have you here again, [name]. What feels like an area for fine-tuning right now? Should we start where we left off, or do you have something else for me today?"
         ],
-        "follow_up": [
-            "Got it. That's clear. What triggered that shift?",
-            "Makes sense. What's influencing your energy levels right now?",
-            "Okay, so pressure and focus. What helps you recover best after a tough day?",
-            "That's solid awareness. What would you like to optimize next?",
-            "Understood. What do you want to handle differently next time?"
+        "second_answers": [
+            "Got it. That's clear. What do you think triggered that shift in performance?",
+            "Makes sense. Let's look at what's influencing your energy levels right now.",
+            "Okay, sounds like we're dealing with pressure and focus. What helps you recover best after a tough day?",
+            "That's a strong awareness. What would you like to optimize next --- your mindset, your routine, or your reactions?",
+            "Understood. Let's make this practical --- what do you want to handle differently next time?"
         ],
         "multiple_issues": [
-            "You've named several things. Which one impacts your performance the most?",
-            "That's a good overview. What's slowing you down the most right now?",
-            "You've touched on several topics. What's the biggest bottleneck?",
-            "There's a lot happening. Which piece, if improved, would bring the biggest relief?",
-            "Let's focus. What's one habit or stressor we should target first?"
+            "You've named quite a few areas. Let's narrow it down --- which one impacts your performance the most?",
+            "That's a good overview. To stay effective, what's one piece that's slowing you down most right now?",
+            "You've touched on several topics --- what's the biggest bottleneck in your focus or energy?",
+            "Sounds like there's a lot happening. Which part, if improved, would bring the biggest relief?",
+            "Let's simplify --- what's one habit or stressor we can target first to create momentum?"
         ],
         "user_motivated": [
-            "Great energy. What's one area where you'd like to push this week?",
-            "You sound focused. How can you use that momentum to stay consistent?",
-            "Excellent. Let's channel that. What challenge are you ready to face?",
-            "That's solid. What structure or routine will help you stay on track?",
-            "You sound clear. What do you want to sharpen even more?"
+            "Great energy, [name]. What's one area where you'd like to push your limits this week?",
+            "Sounds like you're in flow. How can you use that focus to sustain progress?",
+            "Excellent mindset. Let's channel that --- what's the next challenge you're ready to face?",
+            "That's solid motivation. What structure or routine will help you stay consistent?",
+            "You sound focused and clear. What do you want to sharpen even further?"
         ],
         "user_stressed": [
-            "Sounds like pressure's building. What tells you your stress is getting high?",
-            "I hear your system feels overloaded. Where can you release some tension?",
-            "That's tough, but manageable. What helps you reset when focus slips?",
-            "This happens to everyone. What's the smallest thing you can control right now?",
-            "You sound drained. Let's talk about recovery. What's been missing from your rest?"
+            "Sounds like pressure's building. Let's ground for a second --- what's one sign that tells you your stress is getting too high?",
+            "I hear that your system feels overloaded. Let's look at where you can release some tension.",
+            "That's tough, but manageable. What helps you reset when your focus starts slipping?",
+            "It's okay --- this happens to everyone under pressure. What's the smallest thing you can control right now?",
+            "You sound drained, but not defeated. Let's talk about recovery --- what's been missing from your rest?"
         ]
     }
 }
 
 SCENARIO_RESPONSES = {
     "maya": {
-        "feeling_overwhelmed": {
+        "1_feeling_overwhelmed": {
+            "title": "Feeling Overwhelmed",
             "user": "I feel like everything's happening at once and I can't slow my mind down.",
-            "response": "That sounds like your mind is running fast. Where do you feel that pressure most right now? In your body, your thoughts, or both?"
+            "maya": "That sounds like a full mind and a fast pace. Let's take one slow breath --- if you tune in for a second, what part of you feels most tense right now?"
         },
-        "self_doubt": {
+        "2_self_doubt": {
+            "title": "Self-Doubt",
             "user": "I keep second-guessing myself lately, even with small things.",
-            "response": "That self-doubt can be draining. When you're not second-guessing, what does that clarity feel like? Can you tap into that?"
+            "maya": "It can be so draining, when your inner voice feels uncertain. What would it feel like to listen instead to the part of you that quietly knows?"
         },
-        "loss_of_motivation": {
+        "3_loss_of_motivation": {
+            "title": "Loss of Motivation",
             "user": "I just feel disconnected from everything I used to enjoy.",
-            "response": "Sometimes motivation fades when we lose connection to what matters. What used to make you feel most alive about those things?"
+            "maya": "Sometimes motivation fades when we lose connection to meaning. What used to make you feel most alive in those moments?"
         },
-        "fear_wrong_decision": {
+        "4_fear_wrong_decision": {
+            "title": "Fear of Making the Wrong Decision",
             "user": "I'm scared I'll choose the wrong path and regret it later.",
-            "response": "That fear makes sense. If you set aside the worry for a moment, what feels more peaceful to you right now?"
+            "maya": "That fear often shows up when we've lost touch with our inner compass. If you set logic aside for a moment --- what choice feels more peaceful inside?"
         },
-        "stress_sleep": {
+        "5_stress_sleep": {
+            "title": "Stress and Sleep Issues",
             "user": "I can't sleep, my thoughts keep running.",
-            "response": "Your mind is active at night. When you're lying there, what's the main thing running through your head?"
+            "maya": "Your body might be asking for stillness. Let's pause --- can you sense where the tension sits most strongly? Just naming it helps the body release."
         },
-        "relationship_conflict": {
+        "6_relationship_conflict": {
+            "title": "Relationship Conflict",
             "user": "I keep clashing with my partner even though we want the same things.",
-            "response": "It sounds like love and frustration are both there. What do you think you actually need in those moments when things get tense?"
+            "maya": "It sounds like love and frustration are both present. What might your deeper need be in those moments when you feel misunderstood?"
         },
-        "procrastination": {
+        "7_procrastination": {
+            "title": "Procrastination",
             "user": "I know what I want to do but keep postponing it.",
-            "response": "That hesitation is trying to tell you something. What do you think that part of you is protecting?"
+            "maya": "Maybe a part of you doesn't feel ready yet --- not out of laziness, but caution. What do you think that hesitation is trying to protect?"
         },
-        "boundaries": {
+        "8_boundaries": {
+            "title": "Struggling with Boundaries",
             "user": "I always end up saying yes to others, even when I'm tired.",
-            "response": "That's a common pattern. What would it feel like to say no once, just for yourself?"
+            "maya": "That's such a common pattern of care. What would it feel like to say no once --- from a place of kindness, not guilt?"
         },
-        "career_doubt": {
+        "9_career_doubt": {
+            "title": "Career or Purpose Doubt",
             "user": "I'm not sure my work fits me anymore.",
-            "response": "Your values might be shifting. What part of your work still feels aligned with who you're becoming?"
+            "maya": "It might be your values evolving faster than your circumstances. What part of your work still feels aligned with who you are becoming?"
         },
-        "setback_loss": {
+        "10_setback_loss": {
+            "title": "Setback or Loss",
             "user": "Something big failed recently and I'm struggling to move on.",
-            "response": "It's natural to need time after loss. When you think about it now, what understanding or clarity is starting to emerge?"
+            "maya": "It's natural to need time to recalibrate after loss. When you think about it now, what lesson or clarity feels quietly present beneath the pain?"
         }
     },
     "malik": {
-        "feeling_overwhelmed": {
+        "1_feeling_overwhelmed": {
+            "title": "Feeling Overwhelmed",
             "user": "There's too much on my plate and I can't focus.",
-            "response": "Your system's running at max load. What's the one task that would reduce the most pressure if you got it done?"
+            "malik": "Sounds like your system's running at max load. Let's slow things down --- what's the one task that would reduce the most pressure if done first?"
         },
-        "self_doubt": {
+        "2_self_doubt": {
+            "title": "Self-Doubt",
             "user": "I keep doubting if I'm capable enough for this role.",
-            "response": "That's normal under pressure. What's one thing you've done recently that shows you can handle the pressure?"
+            "malik": "That's a normal stress response --- your brain scanning for threat. Let's reframe it: what's one thing you've done recently that proves you can handle pressure?"
         },
-        "loss_of_motivation": {
+        "3_loss_of_motivation": {
+            "title": "Loss of Motivation",
             "user": "I can't find the drive I used to have.",
-            "response": "Motivation drops when your system needs recovery. How have your sleep, nutrition, and rest been lately?"
+            "malik": "Motivation fluctuates with recovery. How has your rest, nutrition, or focus time been lately? Your system might be asking for reset, not more effort."
         },
-        "fear_wrong_decision": {
+        "4_fear_wrong_decision": {
+            "title": "Fear of Making the Wrong Decision",
             "user": "I'm afraid I'll make a bad call at work.",
-            "response": "That's performance pressure talking. What's the realistic worst case here, and what would actually be in your control?"
+            "malik": "That's performance pressure talking. Let's map it out --- what's the realistic worst case, and what's fully within your control?"
         },
-        "stress_sleep": {
+        "5_stress_sleep": {
+            "title": "Stress and Sleep Issues",
             "user": "My sleep's terrible. I wake up wired.",
-            "response": "Your system's in high alert mode. Try this: before bed, slow your breathing so your exhale is longer than your inhale. What's one thing you could change tonight?"
+            "malik": "Classic hyperarousal. Let's test something: before bed, spend two minutes slowing your breathing --- exhale twice as long as you inhale. It'll train your body to power down."
         },
-        "relationship_conflict": {
+        "6_relationship_conflict": {
+            "title": "Relationship Conflict",
             "user": "I argue more with people lately, even over small things.",
-            "response": "That usually signals accumulated stress, not real disagreement. What drains you most—workload, fatigue, or something else?"
+            "malik": "That's often a sign of accumulated stress, not real disagreement. What triggers do you notice before tension rises --- fatigue, workload, or mindset?"
         },
-        "procrastination": {
+        "7_procrastination": {
+            "title": "Procrastination",
             "user": "I keep avoiding important tasks.",
-            "response": "Avoidance often means your system's fatigued. What's one small, measurable action that would break this for you?"
+            "malik": "Avoidance often signals mental fatigue. Let's simplify --- what's one small, measurable action that would break the loop?"
         },
-        "boundaries": {
+        "8_boundaries": {
+            "title": "Struggling with Boundaries",
             "user": "People keep adding to my workload and I can't say no.",
-            "response": "That's a reliability trap. What's one polite way you could defer non-priority requests?"
+            "malik": "That's a performance trap --- wanting to stay reliable. Let's test a boundary script: what's one polite way you could defer non-priority requests?"
         },
-        "career_doubt": {
+        "9_career_doubt": {
+            "title": "Career or Purpose Doubt",
             "user": "I'm not sure my career path still fits me.",
-            "response": "That's valuable data. What energizes you most in your week, and what drains you fastest?"
+            "malik": "That's data, not failure. Let's evaluate it objectively: what energizes you most during your week, and what drains you fastest?"
         },
-        "setback_loss": {
+        "10_setback_loss": {
+            "title": "Setback or Loss",
             "user": "I failed at something major and can't bounce back.",
-            "response": "Every setback is feedback. What led to the outcome, and which parts can you actually control next time?"
+            "malik": "Every setback is feedback. Let's run a short analysis --- what variables led to the outcome, and which ones are in your control for next time?"
         }
     }
 }
 
 def get_starter(coach: str, category: str) -> list:
     """Get conversation starters for a coach"""
-    try:
-        return CONVERSATION_STARTERS.get(coach, {}).get(category, [])
-    except:
-        return []
+    return CONVERSATION_STARTERS.get(coach, {}).get(category, [])
 
-def get_scenario_response(coach: str, scenario: str) -> dict:
+def get_scenario_response(coach: str, scenario_key: str) -> dict:
     """Get scenario response for a coach"""
-    try:
-        return SCENARIO_RESPONSES.get(coach, {}).get(scenario, {})
-    except:
-        return {}
+    return SCENARIO_RESPONSES.get(coach, {}).get(scenario_key, {})
