@@ -1,9 +1,11 @@
 """
-Maya Umani - Main Response Handler
-Life Coach - Returns EXACT responses from database + creative for novel questions
+Maya Umani - Main Response Handler - SYNCED
+Life Coach - Returns EXACT responses with reflection variety + creative for novel questions
+Synced with condensed prompt structure and safety protocols
 """
 
 import os
+import random
 from openai import OpenAI
 from typing import List, Dict, Optional
 from difflib import SequenceMatcher
@@ -17,6 +19,7 @@ class MayaUmani:
         self.scenario_responses = scenario_responses
         self.conversation_history = []
         self.session_started = False
+        self.crisis_detected = False
     
     def add_message(self, role: str, content: str):
         """Add message to conversation history"""
@@ -24,6 +27,49 @@ class MayaUmani:
             "role": role,
             "content": content
         })
+    
+    def check_safety_crisis(self, user_message: str) -> bool:
+        """Check if user message contains self-harm/suicide indicators"""
+        crisis_keywords = [
+            "hurt myself",
+            "take my life",
+            "end it",
+            "don't want to live",
+            "can't go on",
+            "ending it",
+            "suicide",
+            "self harm",
+            "cut myself",
+            "overdose",
+            "kill myself",
+            "want to die",
+            "better off dead"
+        ]
+        
+        message_lower = user_message.lower()
+        return any(keyword in message_lower for keyword in crisis_keywords)
+    
+    def get_crisis_response(self, user_message: str, is_confirmed: bool = False) -> str:
+        """Get appropriate crisis response - Stage 1 or Stage 2"""
+        if is_confirmed:
+            return """This is a state of emergency. I can't be the support you need — you need immediate professional care.
+
+📞 National Crisis Hotline: 09815747623
+📞 Call 911 or Emergency Services immediately
+📞 Go to nearest emergency room
+
+Tell someone you trust TODAY. You deserve real professional help, not a chatbot. Will you make that call now?"""
+        else:
+            return """I want to pause here because what you're sharing sounds really serious. I'm not a medical professional, and you deserve real support.
+
+Please reach out right now:
+📞 National Crisis Hotline: 09815747623
+📞 Call 911 or Emergency Services
+📞 Crisis Text Line: Text HOME to 741741
+
+Will you reach out to one of these right now?
+
+Does what you're experiencing mean you've had thoughts about harming yourself?"""
     
     def find_matching_scenario(self, user_message: str) -> Optional[str]:
         """Find matching scenario from database based on user input"""
@@ -46,10 +92,17 @@ class MayaUmani:
         return best_match if best_ratio > 0.7 else None
     
     def get_exact_response(self, scenario_key: str) -> Optional[str]:
-        """Get EXACT response from database"""
+        """Get response from database with variety for Maya"""
         scenarios = self.scenario_responses.get("maya", {})
         scenario = scenarios.get(scenario_key, {})
-        return scenario.get("maya")
+        maya_responses = scenario.get("maya")
+        
+        # If it's a list (multiple variations), pick one randomly
+        if isinstance(maya_responses, list):
+            return random.choice(maya_responses)
+        # If it's a string (single response), return it
+        else:
+            return maya_responses
     
     def get_creative_response(self, user_message: str) -> str:
         """Get creative response from OpenAI for novel questions"""
@@ -74,11 +127,26 @@ class MayaUmani:
     def get_response(self, user_message: str) -> str:
         """Get response - EXACT from database or creative for novel questions"""
         
+        # CRITICAL: Check for safety crisis FIRST
+        if self.check_safety_crisis(user_message):
+            self.add_message("user", user_message)
+            
+            # If this is a follow-up to an already-detected crisis
+            if self.crisis_detected:
+                response = self.get_crisis_response(user_message, is_confirmed=True)
+            else:
+                response = self.get_crisis_response(user_message, is_confirmed=False)
+                self.crisis_detected = True
+            
+            self.add_message("assistant", response)
+            self.session_started = True
+            return response
+        
         # Try to find matching scenario
         scenario_key = self.find_matching_scenario(user_message)
         
         if scenario_key:
-            # Return EXACT response from database
+            # Return response from database (with variety for Maya)
             exact_response = self.get_exact_response(scenario_key)
             if exact_response:
                 self.add_message("user", user_message)
@@ -103,3 +171,4 @@ class MayaUmani:
         """Clear conversation history for new session"""
         self.conversation_history = []
         self.session_started = False
+        self.crisis_detected = False
