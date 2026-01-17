@@ -43,7 +43,7 @@ if 'messages' not in st.session_state:
 
 # Header
 st.markdown("=" * 60)
-st.title("🧠 AI COACHING PLATFORM")
+st.title("🧠 AI COACHING PLATFORM_updated")
 st.markdown("=" * 60)
 st.markdown("**Natural, Professional Coaching with AI**")
 st.markdown("**EXACT 100% Responses + Creative Novel Questions**")
