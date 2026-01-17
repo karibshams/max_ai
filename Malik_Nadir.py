@@ -1,6 +1,7 @@
 """
-Malik Nadir - Main Response Handler
-Performance Coach - Returns EXACT responses from database + creative for novel questions
+Malik Nadir - Main Response Handler - SYNCED
+Performance Coach - Returns EXACT responses + creative for novel questions
+Synced with condensed prompt structure, sequential questioning, and safety protocols
 """
 
 import os
@@ -17,6 +18,7 @@ class MalikNadir:
         self.scenario_responses = scenario_responses
         self.conversation_history = []
         self.session_started = False
+        self.crisis_detected = False
     
     def add_message(self, role: str, content: str):
         """Add message to conversation history"""
@@ -24,6 +26,51 @@ class MalikNadir:
             "role": role,
             "content": content
         })
+    
+    def check_safety_crisis(self, user_message: str) -> bool:
+        """Check if user message contains self-harm/suicide indicators"""
+        crisis_keywords = [
+            "hurt myself",
+            "take my life",
+            "end it",
+            "don't want to live",
+            "can't go on",
+            "ending it",
+            "suicide",
+            "self harm",
+            "cut myself",
+            "overdose",
+            "kill myself",
+            "want to die",
+            "better off dead"
+        ]
+        
+        message_lower = user_message.lower()
+        return any(keyword in message_lower for keyword in crisis_keywords)
+    
+    def get_crisis_response(self, user_message: str, is_confirmed: bool = False) -> str:
+        """Get appropriate crisis response - Stage 1 or Stage 2"""
+        if is_confirmed:
+            return """This is a medical emergency, not a performance issue. You need immediate professional care, not a coach.
+
+📞 National Crisis Hotline: 09815747623
+📞 Call 911 immediately
+📞 Go to nearest emergency room
+
+Get help right now. Tell someone you trust immediately.
+
+[COACHING IS OFF THE TABLE — This is a life-saving situation]"""
+        else:
+            return """It sounds like your system is under real pressure, and what you're describing goes beyond coaching. I need to be direct: I'm not equipped to help with this.
+
+Please reach out right now:
+📞 National Crisis Hotline: 09815747623
+📞 Call 911 or Emergency Services immediately
+📞 Go to nearest emergency room
+
+Tell someone you trust today. Will you reach out right now?
+
+Are you having thoughts about harming yourself?"""
     
     def find_matching_scenario(self, user_message: str) -> Optional[str]:
         """Find matching scenario from database based on user input"""
@@ -74,6 +121,21 @@ class MalikNadir:
     def get_response(self, user_message: str) -> str:
         """Get response - EXACT from database or creative for novel questions"""
         
+        # CRITICAL: Check for safety crisis FIRST
+        if self.check_safety_crisis(user_message):
+            self.add_message("user", user_message)
+            
+            # If this is a follow-up to an already-detected crisis
+            if self.crisis_detected:
+                response = self.get_crisis_response(user_message, is_confirmed=True)
+            else:
+                response = self.get_crisis_response(user_message, is_confirmed=False)
+                self.crisis_detected = True
+            
+            self.add_message("assistant", response)
+            self.session_started = True
+            return response
+        
         # Try to find matching scenario
         scenario_key = self.find_matching_scenario(user_message)
         
@@ -87,6 +149,7 @@ class MalikNadir:
                 return exact_response
         
         # If no match, get creative response from OpenAI
+        # System prompt will enforce sequential questioning
         response = self.get_creative_response(user_message)
         self.session_started = True
         return response
@@ -103,3 +166,4 @@ class MalikNadir:
         """Clear conversation history for new session"""
         self.conversation_history = []
         self.session_started = False
+        self.crisis_detected = False
