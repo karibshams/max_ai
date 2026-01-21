@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 import tempfile
 import platform
 import subprocess
+import pygame
 
 load_dotenv()
 
@@ -45,12 +46,11 @@ class ElevenLabsTTS:
             tmp_path = tmp.name
         
         try:
-            if platform.system() == "Darwin":
-                subprocess.run(["afplay", tmp_path])
-            elif platform.system() == "Windows":
-                subprocess.run(["powershell", "-c", f"(New-Object Media.SoundPlayer '{tmp_path}').PlaySync()"])
-            elif platform.system() == "Linux":
-                subprocess.run(["ffplay", "-nodisp", "-autoexit", tmp_path])
+            pygame.mixer.init()
+            pygame.mixer.music.load(tmp_path)
+            pygame.mixer.music.play()
+            while pygame.mixer.music.get_busy():
+                pygame.time.delay(100)
         finally:
             os.unlink(tmp_path)
 
