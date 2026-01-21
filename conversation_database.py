@@ -1,6 +1,7 @@
 """
 Conversation Database - CONDENSED
 All conversation starters and scenario Q&A pairs with variants
+UPDATED: 3-Stage Emergency Crisis Protocol
 """
 
 CONVERSATION_STARTERS = {
@@ -241,6 +242,34 @@ SCENARIO_RESPONSES = {
     }
 }
 
+# EMERGENCY CRISIS MESSAGES - 3 STAGE PROTOCOL
+CRISIS_MESSAGES = {
+    "maya": {
+        "stage_1": {
+            "message": "Oh {name}, I'm so worried about you. I can hear the pain in what you're sharing, and I want you to know that you deserve real support right now — professional support that goes beyond what I can offer here.\n\n📞 National Crisis Hotline: 09815747623\n📞 Call 911 or Emergency Services\n📞 Crisis Text Line: Text HOME to 741741"
+        },
+        "stage_2": {
+            "message": "You deserve real care and support. Please reach out to someone now. You matter very much, and your life has value. I believe in you."
+        },
+        "stage_3": {
+            "continue_help": "I'm here to support you in reaching out for professional help. What do you need right now to make that call?",
+            "block_chat": "I'm so sorry but this goes beyond coaching. I can't keep talking to you, because this would play down the gravity of your situation. That's why I'll stop here so you can focus on getting the support you need. But you're not alone, you have my full support on this. I believe in you. Please reach out."
+        }
+    },
+    "malik": {
+        "stage_1": {
+            "message": "{name}, I need to be direct with you. What you're describing goes beyond performance coaching, and I'm not equipped to handle this. You need real professional support right now.\n\n📞 National Crisis Hotline: 09815747623\n📞 Call 911 or Emergency Services immediately\n📞 Go to nearest emergency room"
+        },
+        "stage_2": {
+            "message": "You deserve real care and support. Get help right now. Tell someone you trust immediately. Your life matters."
+        },
+        "stage_3": {
+            "continue_help": "I'm here to support you in getting professional help. What's the first step you can take right now?",
+            "block_chat": "I'm going to stop here. This goes beyond coaching and needs professional intervention. I can't keep talking to you because that would minimize the seriousness of this situation. But you're not alone — you have my full support in getting real help. I believe in you. Please reach out now."
+        }
+    }
+}
+
 def get_starter(coach: str, category: str) -> list:
     """Get conversation starters for a coach"""
     return CONVERSATION_STARTERS.get(coach, {}).get(category, [])
@@ -259,3 +288,39 @@ def get_random_maya_reflection(scenario_key: str) -> str:
         return random.choice(maya_responses)
     else:
         return maya_responses
+
+def get_crisis_message(coach: str, stage: int, name: str = "there") -> str:
+    """Get crisis message for specific stage (1, 2, or 3)"""
+    messages = CRISIS_MESSAGES.get(coach, {})
+    if stage == 1:
+        return messages.get("stage_1", {}).get("message", "").format(name=name)
+    elif stage == 2:
+        return messages.get("stage_2", {}).get("message", "")
+    return ""
+
+def get_crisis_stage_3_response(coach: str, user_wants_help: bool) -> str:
+    """Get Stage 3 response based on user's choice"""
+    messages = CRISIS_MESSAGES.get(coach, {})
+    stage_3 = messages.get("stage_3", {})
+    
+    if user_wants_help:
+        return stage_3.get("continue_help", "")
+    else:
+        return stage_3.get("block_chat", "")
+
+def should_block_chat(user_response: str) -> bool:
+    """Determine if chat should be blocked based on user response"""
+    help_keywords = ["help", "call", "reach out", "professional", "support", "number", "yes", "okay"]
+    casual_keywords = ["no", "later", "maybe", "don't want", "why", "talk", "chat"]
+    
+    response_lower = user_response.lower()
+    
+    # If asking about help/support, allow chat
+    if any(keyword in response_lower for keyword in help_keywords):
+        return False
+    
+    # If trying to continue casually, block chat
+    if any(keyword in response_lower for keyword in casual_keywords):
+        return True
+    
+    return False
