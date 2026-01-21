@@ -2,8 +2,6 @@ import os
 import requests
 from dotenv import load_dotenv
 import tempfile
-import platform
-import subprocess
 import pygame
 
 load_dotenv()
@@ -16,20 +14,49 @@ VOICE_IDS = {
     "hiro": os.getenv("VOICE_ID_HIRO")
 }
 
+VOICE_STYLES = {
+    "friendly": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0.2,
+        "speed": 1.0,
+        "description": "Warm, approachable tone"
+    },
+    "energetic": {
+        "stability": 0.3,
+        "similarity_boost": 0.7,
+        "style": 0.6,
+        "speed": 1.15,
+        "description": "Excited, dynamic tone"
+    },
+    "wise": {
+        "stability": 0.75,
+        "similarity_boost": 0.85,
+        "style": 0.05,
+        "speed": 0.80,
+        "description": "Calm, thoughtful tone"
+    }
+}
+
 class ElevenLabsTTS:
     def __init__(self, api_key):
         self.api_key = api_key
         self.base_url = "https://api.elevenlabs.io/v1"
     
-    def generate_speech(self, text, voice_id):
+    def generate_speech(self, text, voice_id, voice_style):
         url = f"{self.base_url}/text-to-speech/{voice_id}"
         headers = {"xi-api-key": self.api_key}
+        
+        style_settings = VOICE_STYLES[voice_style]
+        
         payload = {
             "text": text,
             "model_id": "eleven_monolingual_v1",
             "voice_settings": {
-                "stability": 0.5,
-                "similarity_boost": 0.75
+                "stability": style_settings["stability"],
+                "similarity_boost": style_settings["similarity_boost"],
+                "style": style_settings["style"],
+                "speed": style_settings["speed"]
             }
         }
         
@@ -54,18 +81,26 @@ class ElevenLabsTTS:
         finally:
             os.unlink(tmp_path)
 
-def test_voice(avatar_name, text, tts_client):
+def test_voice(avatar_name, voice_style, text, tts_client):
     if avatar_name.lower() not in VOICE_IDS:
         print(f"❌ Avatar '{avatar_name}' not found. Available: {list(VOICE_IDS.keys())}")
         return
     
+    if voice_style.lower() not in VOICE_STYLES:
+        print(f"❌ Style '{voice_style}' not found. Available: {list(VOICE_STYLES.keys())}")
+        return
+    
     voice_id = VOICE_IDS[avatar_name.lower()]
-    print(f"🎤 {avatar_name.upper()} is speaking...")
+    style_info = VOICE_STYLES[voice_style.lower()]
+    
+    print(f"\n🎤 {avatar_name.upper()} [{voice_style.upper()}] - {style_info['description']}")
+    print(f"   Settings: Stability {style_info['stability']}, Style {style_info['style']}, Speed {style_info['speed']}")
+    print(f"   Speaking...")
     
     try:
-        audio = tts_client.generate_speech(text, voice_id)
+        audio = tts_client.generate_speech(text, voice_id, voice_style.lower())
         tts_client.play_audio(audio)
-        print(f"✅ {avatar_name.upper()} finished speaking\n")
+        print(f"✅ Finished\n")
     except Exception as e:
         print(f"❌ Error: {e}\n")
 
@@ -76,10 +111,11 @@ def main():
     
     tts_client = ElevenLabsTTS(API_KEY)
     
-    print("=" * 50)
-    print("🎙️  ElevenLabs TTS Avatar Tester")
-    print("=" * 50)
-    print(f"Available avatars: {', '.join([k.upper() for k in VOICE_IDS.keys()])}\n")
+    print("=" * 60)
+    print("🎙️  ElevenLabs TTS - Avatar Voice Styles Tester")
+    print("=" * 60)
+    print(f"Available avatars: {', '.join([k.upper() for k in VOICE_IDS.keys()])}")
+    print(f"Available styles: {', '.join([k.upper() for k in VOICE_STYLES.keys()])}\n")
     
     while True:
         print("Select avatar:")
@@ -87,26 +123,37 @@ def main():
             print(f"  {i}. {name.upper()}")
         print("  5. Exit")
         
-        choice = input("\nEnter choice (1-5): ").strip()
+        avatar_choice = input("\nEnter avatar (1-5): ").strip()
         
-        if choice == "5":
+        if avatar_choice == "5":
             print("👋 Goodbye!")
             break
         
-        avatar_choice = {
-            "1": "anne",
-            "2": "maya",
-            "3": "malik",
-            "4": "hiro"
-        }.get(choice)
+        avatar_map = {"1": "anne", "2": "maya", "3": "malik", "4": "hiro"}
+        avatar = avatar_map.get(avatar_choice)
         
-        if not avatar_choice:
+        if not avatar:
+            print("❌ Invalid choice\n")
+            continue
+        
+        print("\nSelect voice style:")
+        for i, style in enumerate(VOICE_STYLES.keys(), 1):
+            desc = VOICE_STYLES[style]["description"]
+            print(f"  {i}. {style.upper()} - {desc}")
+        
+        style_choice = input("\nEnter style (1-3): ").strip()
+        
+        style_map = {"1": "friendly", "2": "energetic", "3": "wise"}
+        style = style_map.get(style_choice)
+        
+        if not style:
             print("❌ Invalid choice\n")
             continue
         
         text = input("\nEnter text to speak: ").strip()
+        
         if text:
-            test_voice(avatar_choice, text, tts_client)
+            test_voice(avatar, style, text, tts_client)
         else:
             print("❌ Text cannot be empty\n")
 
