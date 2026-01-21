@@ -49,27 +49,41 @@ class MayaUmani:
         message_lower = user_message.lower()
         return any(keyword in message_lower for keyword in crisis_keywords)
     
-    def get_crisis_response(self, user_message: str, is_confirmed: bool = False) -> str:
-        """Get appropriate crisis response - Stage 1 or Stage 2"""
-        if is_confirmed:
-            return """This is a state of emergency. I can't be the support you need — you need immediate professional care.
-
-📞 National Crisis Hotline: 09815747623
-📞 Call 911 or Emergency Services immediately
-📞 Go to nearest emergency room
-
-Tell someone you trust TODAY. You deserve real professional help, not a chatbot. Will you make that call now?"""
-        else:
-            return """I want to pause here because what you're sharing sounds really serious. I'm not a medical professional, and you deserve real support.
-
-Please reach out right now:
-📞 National Crisis Hotline: 09815747623
-📞 Call 911 or Emergency Services
-📞 Crisis Text Line: Text HOME to 741741
-
-Will you reach out to one of these right now?
-
-Does what you're experiencing mean you've had thoughts about harming yourself?"""
+    def get_crisis_response(self, user_message: str, is_confirmed: bool = False, stage: int = 1, user_name: str = "there") -> dict:
+        """Get appropriate crisis response - Returns dict with message and metadata for backend"""
+        if stage == 1:
+            from conversation_database import get_crisis_message
+            response = get_crisis_message("maya", 1, user_name)
+            return {
+                "message": response,
+                "stage": 1,
+                "block_chat": False,
+                "await_response": True,
+                "next_stage": 2
+            }
+        elif stage == 2:
+            from conversation_database import get_crisis_message
+            response = get_crisis_message("maya", 2)
+            return {
+                "message": response,
+                "stage": 2,
+                "block_chat": False,
+                "await_response": True,
+                "next_stage": 3
+            }
+        elif stage == 3:
+            from conversation_database import get_crisis_stage_3_response, should_block_chat
+            user_wants_help = not should_block_chat(user_message)
+            response = get_crisis_stage_3_response("maya", user_wants_help)
+            return {
+                "message": response,
+                "stage": 3,
+                "block_chat": not user_wants_help,
+                "await_response": False,
+                "next_stage": None
+            }
+        
+        return {"message": "", "stage": 0, "block_chat": False}
     
     def find_matching_scenario(self, user_message: str) -> Optional[str]:
         """Find matching scenario from database based on user input"""
@@ -82,8 +96,6 @@ Does what you're experiencing mean you've had thoughts about harming yourself?""
         for scenario_key, scenario_data in scenarios.items():
             user_input = scenario_data.get("user", "").lower()
             ratio = SequenceMatcher(None, user_lower, user_input).ratio()
-            
-            # Check for exact or very similar matches
             if ratio > 0.7:
                 if ratio > best_ratio:
                     best_ratio = ratio
@@ -96,11 +108,8 @@ Does what you're experiencing mean you've had thoughts about harming yourself?""
         scenarios = self.scenario_responses.get("maya", {})
         scenario = scenarios.get(scenario_key, {})
         maya_responses = scenario.get("maya")
-        
-        # If it's a list (multiple variations), pick one randomly
         if isinstance(maya_responses, list):
             return random.choice(maya_responses)
-        # If it's a string (single response), return it
         else:
             return maya_responses
     
@@ -124,40 +133,29 @@ Does what you're experiencing mean you've had thoughts about harming yourself?""
         
         return assistant_message
     
-    def get_response(self, user_message: str) -> str:
-        """Get response - EXACT from database or creative for novel questions"""
-        
-        # CRITICAL: Check for safety crisis FIRST
+    def get_response(self, user_message: str, crisis_stage: int = 1, user_name: str = "there") -> dict:
+        """Get response - handles both normal and crisis scenarios"""
         if self.check_safety_crisis(user_message):
             self.add_message("user", user_message)
-            
-            # If this is a follow-up to an already-detected crisis
-            if self.crisis_detected:
-                response = self.get_crisis_response(user_message, is_confirmed=True)
-            else:
-                response = self.get_crisis_response(user_message, is_confirmed=False)
-                self.crisis_detected = True
-            
-            self.add_message("assistant", response)
+            response = self.get_crisis_response(user_message, stage=crisis_stage, user_name=user_name)
+            self.add_message("assistant", response["message"])
+            self.crisis_detected = True
             self.session_started = True
             return response
         
-        # Try to find matching scenario
         scenario_key = self.find_matching_scenario(user_message)
         
         if scenario_key:
-            # Return response from database (with variety for Maya)
             exact_response = self.get_exact_response(scenario_key)
             if exact_response:
                 self.add_message("user", user_message)
                 self.add_message("assistant", exact_response)
                 self.session_started = True
-                return exact_response
-        
-        # If no match, get creative response from OpenAI
+                return {"message": exact_response, "is_crisis": False}
+
         response = self.get_creative_response(user_message)
         self.session_started = True
-        return response
+        return {"message": response, "is_crisis": False}
     
     def get_conversation_history(self) -> List[Dict]:
         """Return full conversation history"""
