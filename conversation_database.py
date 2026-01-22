@@ -242,7 +242,6 @@ SCENARIO_RESPONSES = {
     }
 }
 
-# EMERGENCY CRISIS MESSAGES - 3 STAGE PROTOCOL
 CRISIS_MESSAGES = {
     "maya": {
         "stage_1": {
@@ -314,12 +313,8 @@ def should_block_chat(user_response: str) -> bool:
     casual_keywords = ["no", "later", "maybe", "don't want", "why", "talk", "chat"]
     
     response_lower = user_response.lower()
-    
-    # If asking about help/support, allow chat
     if any(keyword in response_lower for keyword in help_keywords):
         return False
-    
-    # If trying to continue casually, block chat
     if any(keyword in response_lower for keyword in casual_keywords):
         return True
     
