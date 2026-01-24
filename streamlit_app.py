@@ -1,6 +1,6 @@
 """
 Streamlit Web Interface - Live Chat with Maya & Malik
-EXACT 100% responses from database + 0.5 temperature for creative novel questions
+FIXED: Proper response handling for dict-based crisis protocol
 """
 
 import os
@@ -21,7 +21,7 @@ load_dotenv()
 
 # Page configuration
 st.set_page_config(
-    page_title="AI Coaching Platform_updated",
+    page_title="AI Coaching Platform",
     page_icon="🧠",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -40,10 +40,16 @@ if 'coach_type' not in st.session_state:
     st.session_state.coach_type = None
 if 'messages' not in st.session_state:
     st.session_state.messages = []
+if 'user_name' not in st.session_state:
+    st.session_state.user_name = "User"
+if 'crisis_stage' not in st.session_state:
+    st.session_state.crisis_stage = 1
+if 'chat_disabled' not in st.session_state:
+    st.session_state.chat_disabled = False
 
 # Header
 st.markdown("=" * 60)
-st.title("🧠 AI COACHING PLATFORM_updated")
+st.title("🧠 AI COACHING PLATFORM")
 st.markdown("=" * 60)
 st.markdown("**Natural, Professional Coaching with AI**")
 st.markdown("**EXACT 100% Responses + Creative Novel Questions**")
@@ -66,11 +72,15 @@ with st.sidebar:
             st.session_state.coach_name = None
             st.session_state.coach_type = None
             st.session_state.messages = []
+            st.session_state.crisis_stage = 1
+            st.session_state.chat_disabled = False
             st.rerun()
         
         if st.button("🗑️ Clear Conversation", use_container_width=True):
             st.session_state.current_coach.reset_conversation()
             st.session_state.messages = []
+            st.session_state.crisis_stage = 1
+            st.session_state.chat_disabled = False
             st.success("Conversation cleared!")
             st.rerun()
 
@@ -88,6 +98,8 @@ if menu_choice == "Chat":
                 st.session_state.coach_name = "Maya Umani"
                 st.session_state.coach_type = "maya"
                 st.session_state.messages = []
+                st.session_state.crisis_stage = 1
+                st.session_state.chat_disabled = False
                 st.rerun()
         
         with col2:
@@ -96,6 +108,8 @@ if menu_choice == "Chat":
                 st.session_state.coach_name = "Malik Nadir"
                 st.session_state.coach_type = "malik"
                 st.session_state.messages = []
+                st.session_state.crisis_stage = 1
+                st.session_state.chat_disabled = False
                 st.rerun()
     
     else:
@@ -112,27 +126,51 @@ if menu_choice == "Chat":
                 else:
                     st.chat_message("assistant").write(message["content"])
         
-        # User input
-        user_input = st.chat_input(f"You: ")
-        
-        if user_input:
-            # Add user message to display
-            st.session_state.messages.append({
-                "role": "user",
-                "content": user_input
-            })
+        # Show warning if chat is disabled
+        if st.session_state.chat_disabled:
+            st.error("⚠️ This conversation has been ended for your safety. Please reach out to professional support.")
+        else:
+            # User input
+            user_input = st.chat_input(f"You: ")
             
-            # Get coach response
-            with st.spinner(f"{st.session_state.coach_name} is thinking..."):
-                response = st.session_state.current_coach.get_response(user_input)
-            
-            # Add coach response to display
-            st.session_state.messages.append({
-                "role": "assistant",
-                "content": response
-            })
-            
-            st.rerun()
+            if user_input:
+                # Add user message to display
+                st.session_state.messages.append({
+                    "role": "user",
+                    "content": user_input
+                })
+                
+                # Get coach response with proper parameters
+                with st.spinner(f"{st.session_state.coach_name} is thinking..."):
+                    response = st.session_state.current_coach.get_response(
+                        user_input,
+                        crisis_stage=st.session_state.crisis_stage,
+                        user_name=st.session_state.user_name
+                    )
+                
+                # Handle response (can be dict or string)
+                if isinstance(response, dict):
+                    message_content = response.get("message", "")
+                    
+                    # Check if this is a crisis response
+                    if "stage" in response:
+                        # Update crisis stage for next response
+                        if response.get("next_stage"):
+                            st.session_state.crisis_stage = response.get("next_stage")
+                        
+                        # Check if chat should be disabled
+                        if response.get("block_chat"):
+                            st.session_state.chat_disabled = True
+                else:
+                    message_content = response
+                
+                # Add coach response to display
+                st.session_state.messages.append({
+                    "role": "assistant",
+                    "content": message_content
+                })
+                
+                st.rerun()
 
 elif menu_choice == "View Conversation Starters":
     st.markdown("## Conversation Starters")
@@ -179,6 +217,8 @@ elif menu_choice == "Reset":
         st.session_state.coach_name = None
         st.session_state.coach_type = None
         st.session_state.messages = []
+        st.session_state.crisis_stage = 1
+        st.session_state.chat_disabled = False
         st.success("All sessions reset successfully!")
         st.rerun()
 
